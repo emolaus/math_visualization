@@ -41,23 +41,22 @@ def rotate_riemann_sphere_around_x_axis(u, v, w, theta):
     uvw_rotated = np.array([u, v_rotated, w_rotated])
     return uvw_rotated[0], uvw_rotated[1], uvw_rotated[2]
 
-
-def mobius_transform_from_xy(x, y, a, b, c, d):
-    ''' 
-    Apply the Mobius transformation (az + b) / (cz + d) to points in the plane,
-    where z = x + iy. Returns x,y,z - the transformed x and y coordinates in the plane, and zeros in z.
+def mobius_transform(*args):
+    ''' Apply the Mobius transformation (az + b) / (cz + d) to points in the plane, where z = x + iy.  
+    Accepts either x,y,a,b,c,d or z,a,b,c,d   
     '''
-    z = x + 1j*y
-    transformed_z = (a*z + b) / (c*z + d)
-    return transformed_z.real, transformed_z.imag, z.imag*0
+    if len(args) == 6:
+        x, y, a, b, c, d = args
+        z = x + 1j*y
 
-def mobius_transform_on_complex(z, a, b, c, d):
-    ''' 
-    Apply the Mobius transformation (az + b) / (cz + d) to points in the plane,
-    where z = x + iy. Returns the transformed complex number.
-    '''
+    elif len(args) == 5:
+        z, a, b, c, d = args[:, 0], args[:, 1], args[:, 2], args[:, 3], args[:, 4]
+    
+    else:
+        raise ValueError("Invalid input. Provide either separate x,y,a,b,c,d or z,a,b,c,d.")
+    
     transformed_z = (a*z + b) / (c*z + d)
-    return transformed_z
+    return transformed_z.real, transformed_z.imag, np.zeros_like(transformed_z.real)
 
 # Projection is drawing a straight line from the north pole to the plane and finding the intersection point,
 # or drawing a straight line from the north pole through the point on the sphere and finding the intersection point with the plane.
@@ -100,12 +99,12 @@ def project_plane_to_sphere(*args):
 
 # *** 2D shapes in the plane ***
 def circle_on_plane(center_x, center_y, radius, n_points = 100):
-    ''' Returns x and y coordinates of points on a circle in the plane. '''
+    ''' Returns a points array of points on a circle in the plane. '''
     angles = np.linspace(0, 2*np.pi, n_points, endpoint=False)
     x = center_x + radius * np.cos(angles)
     y = center_y + radius * np.sin(angles)
     z = np.zeros_like(x)
-    return x, y, z
+    return np.c_[x, y, z]
 
 def square_on_plane(center_x, center_y, angle360, side_length, n_points_per_side = 100):
     ''' Returns x and y coordinates of points on a square in the plane. '''
@@ -146,4 +145,4 @@ def square_on_plane(center_x, center_y, angle360, side_length, n_points_per_side
     x = x + center_x
     y = y + center_y
 
-    return x, y, z
+    return np.c_[x, y, z]
