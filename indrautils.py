@@ -79,11 +79,23 @@ def project_sphere_to_plane(*args):
         return np.c_[x, y, np.zeros_like(x)]
     return x, y, np.zeros_like(x)
 
-def project_plane_to_sphere(x,y):
+def project_plane_to_sphere(*args):
+    ''' Accepts a points object with shape (n_points, 3) or separate x,y,z arrays. Returns x,y,z - the projected x and y coordinates in the plane, and zeros in z. '''
+    return_as_points = False
+    if len(args) == 1:
+        points = args[0]
+        x, y = points[:, 0], points[:, 1]
+        return_as_points = True
+    elif len(args) == 2:
+        x, y = args
+    else:
+        raise ValueError("Invalid input. Provide either a single (n_points, 3) array or separate x,y,z arrays.")
     xy_squared_dist = x*x+y*y
     u = x / (xy_squared_dist + 1)
     v = y / (xy_squared_dist + 1)
     w = xy_squared_dist / (xy_squared_dist + 1)
+    if return_as_points:
+        return np.c_[u, v, w]
     return u, v, w
 
 # *** 2D shapes in the plane ***
