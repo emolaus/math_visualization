@@ -1,6 +1,6 @@
 import numpy as np
 import pyvista as pv
-import indraspearls.indrautils as iu
+import indrautils as iu
 
 t = np.linspace(0, 2*np.pi, 500)
 x = np.cos(t)
@@ -16,8 +16,7 @@ theta = 0
 ut, vt, wt = iu.rotate_riemann_sphere_around_x_axis(u, v, w, theta)
 
 # project the rotated points back to the plane
-xt, yt = iu.project_sphere_to_plane(ut, vt, wt)
-zt = np.zeros_like(xt)
+xt, yt, zt = iu.project_sphere_to_plane(ut, vt, wt)
 
 # Stack the coordinates into a single array of shape (n_points, 3)
 # Get back e.g. x by doing orig_points[:, 0]
@@ -45,8 +44,7 @@ def update(angle):
     ut, vt, wt = iu.rotate_riemann_sphere_around_x_axis(u, v, w, angle)
     
     # project the rotated points back to the plane
-    xt, yt = iu.project_sphere_to_plane(ut, vt, wt)
-    zt = np.zeros_like(xt)
+    xt, yt, zt = iu.project_sphere_to_plane(ut, vt, wt)
 
     # update sphere curve
     line_sphere.points = np.c_[ut, vt, wt]

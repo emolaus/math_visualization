@@ -65,7 +65,7 @@ def mobius_transform_on_complex(z, a, b, c, d):
 def project_sphere_to_plane(u,v,w):
     x = u / (1 - w)
     y = v / (1 - w)
-    return x, y
+    return x, y, np.zeros_like(x)
 
 def project_plane_to_sphere(x,y):
     xy_squared_dist = x*x+y*y

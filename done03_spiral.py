@@ -1,5 +1,5 @@
 import numpy as np
-import indraspearls.indrautils as iu
+import indrautils as iu
 import pyvista as pv
 
 # Polar grid in plane

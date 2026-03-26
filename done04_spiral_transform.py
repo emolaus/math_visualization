@@ -1,5 +1,5 @@
 import numpy as np
-import indraspearls.indrautils as iu
+import indrautils as iu
 import pyvista as pv
 
 # Polar grid in plane
@@ -30,7 +30,7 @@ X,Y,Z = iu.project_plane_to_sphere(xx, yy)
 X, Y, Z = iu.rotate_riemann_sphere_around_x_axis(X, Y, Z, np.pi/4)
 
 # Project back onto the plane
-xx, yy = iu.project_sphere_to_plane(X, Y, Z)
+xx, yy, _ = iu.project_sphere_to_plane(X, Y, Z)
 
 # Grid on sphere
 w = n
