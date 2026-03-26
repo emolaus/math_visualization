@@ -62,9 +62,21 @@ def mobius_transform_on_complex(z, a, b, c, d):
 # Projection is drawing a straight line from the north pole to the plane and finding the intersection point,
 # or drawing a straight line from the north pole through the point on the sphere and finding the intersection point with the plane.
 # The equations are from page 59 in Indra's Pearls, 2002 edition.
-def project_sphere_to_plane(u,v,w):
+def project_sphere_to_plane(*args):
+    ''' Accepts a points object with shape (n_points, 3) or separate x,y,z arrays. Returns x,y,z - the projected x and y coordinates in the plane, and zeros in z. '''
+    return_as_points = False
+    if len(args) == 1:
+        points = args[0]
+        u, v, w = points[:, 0], points[:, 1], points[:, 2]
+        return_as_points = True
+    elif len(args) == 3:
+        u, v, w = args
+    else:
+        raise ValueError("Invalid input. Provide either a single (n_points, 3) array or separate x,y,z arrays.")
     x = u / (1 - w)
     y = v / (1 - w)
+    if return_as_points:
+        return np.c_[x, y, np.zeros_like(x)]
     return x, y, np.zeros_like(x)
 
 def project_plane_to_sphere(x,y):
