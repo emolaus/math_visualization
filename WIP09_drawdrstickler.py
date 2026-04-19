@@ -2,35 +2,40 @@ import numpy as np
 import pyvista as pv
 import svg_parsing.svg_utils as svg_utils
 
-lines = svg_utils.svg_to_normalized_lines('./svg_parsing/drstickler.svg')
-print('lines shape:', lines.shape)
-print(lines[0])
+point_list, line_segment_list = svg_utils.get_paths_as_lines('./svg_parsing/drstickler.svg')
 
-def linesegments_to_pv_line_array(lines):
-    ''' expects a numpy array of shape N,2,3
-    '''
+# A list of Dr. Sticklers, each one is a copy of the original point list, but with different transformations applied to it.
+copies = []
+copies.append(point_list.copy())
+copies.append(point_list.copy())
+copies[1] *= 2
+copies[1][:,0] = (copies[1][:,0] + 1)
+
+
+
+
+def linesegments_to_pv_line_array(point_list, line_segment_list):
+    ''' Expects an Nx3 numpy array of points and a list of line segments, defined by pairs of points. This will be a list of lists of length 2, with integer indices referring to the points in the array.
+    ''' 
     pv_lines = []
-    for i in range(lines.shape[0]):
-        line = lines[i]
-        start_point = line[0]
-        end_point = line[1]
-        print(i, 'start_point:', start_point, 'end_point:', end_point)
+    for line in line_segment_list:
+        start_index = line[0]
+        end_index = line[1]
+        start_point = point_list[start_index]
+        end_point = point_list[end_index]
 
         line = pv.lines_from_points(np.array([start_point, end_point]), close=False)
         pv_lines.append(line)
     return pv_lines
 
-original_dr_stickler = linesegments_to_pv_line_array(lines.copy())
-lines_1 = lines.copy()
-lines_2 = lines.copy()
-lines_1[:,:,0] = lines_1[:,:,0] + 1
-dr_stickler_1 = linesegments_to_pv_line_array(lines_1)
-
-
+def add_lines_to_plotter(pv_lines, plotter, color="black", line_width=3):
+    for line in pv_lines:
+        plotter.add_mesh(line, color=color, line_width=line_width)
 
 p = pv.Plotter()
-for line in original_dr_stickler:
-    p.add_mesh(line, color="black", line_width=3)
-for line in dr_stickler_1:
-    p.add_mesh(line, color="black", line_width=3)
+for copy in copies:
+     pv_lines = linesegments_to_pv_line_array(copy, line_segment_list)
+     add_lines_to_plotter(pv_lines, p, color="black", line_width=3)
+
 p.show()
+
