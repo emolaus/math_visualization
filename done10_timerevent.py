@@ -18,7 +18,7 @@ def callback(step):
 p.iren.initialize()
 
 # max_steps: The maximum number of times the timer callback will be called. 
-p.add_timer_event(max_steps=0, duration=50, callback=callback)
+p.add_timer_event(max_steps=1000, duration=50, callback=callback)
 
 p.add_mesh(pv.Plane(center=(0, 0, 0), direction=(0, 0, 1), i_size=3, j_size=3), style="wireframe", color="white")
 
