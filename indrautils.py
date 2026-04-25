@@ -146,3 +146,12 @@ def square_on_plane(center_x, center_y, angle360, side_length, n_points_per_side
     y = y + center_y
 
     return np.c_[x, y, z]
+
+def growth_spiral_on_plane(center_x, center_y, initial_radius, final_radius, growth, n_points = 1000):
+    ''' Returns x, y and z coordinates of points on a growth spiral in the plane. '''
+    t = np.linspace(np.log(initial_radius), np.log(final_radius), n_points)
+    z = np.exp(t + t * growth * 1j)
+    x = center_x + np.real(z)
+    y = center_y + np.imag(z)
+    z = np.zeros_like(x)
+    return np.c_[x, y, z]

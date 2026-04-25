@@ -3,31 +3,11 @@ import indrautils as iu
 import pyvista as pv
 from PIL import Image
 
-# Load a mask
-img = Image.open("dinhochminh.png").convert("L")  # grayscale
-img = np.array(img) / 255.0  # normalize to [0, 1]
-img = np.flipud(img)  # flippa vertikalt så att positiva y-axeln pekar uppåt i bild
-# Om jag har ritat en räv som tittar åt vänster, så kommer "upp" att vara åt positiva y-hållet, 
-# och "vänster" att vara åt negativa x-hållet. Det är lite
-
-h, w = img.shape
-
-# Grid in plane
-x = np.linspace(-1, 1, w)
-y = np.linspace(-1, 1, h)
-xx, yy = np.meshgrid(x, y)
-zz = np.zeros_like(xx)
-planepoints = np.c_[xx.ravel(), yy.ravel(), zz.ravel()]
-# shape of planepoints: (187200, 3)
-grid_mask = pv.StructuredGrid()
-# shape of grid mask points: (187200, 3)
-grid_mask.points = planepoints
-grid_mask.dimensions = [w, h, 1]
-# Add scalar for masking
-grid_mask["intensity"] = img.ravel().astype(float)
+points_spiral = iu.growth_spiral_on_plane(0, 0, 0.01, 100.0, 20.0, n_points = 10000)
+lines_spiral = pv.lines_from_points(points_spiral, close=False)
 
 p = pv.Plotter()
-actor = p.add_mesh(grid_mask, scalars="intensity", cmap="gray", show_scalar_bar=False, name='mask')
+actor = p.add_mesh(lines_spiral, color="black", line_width=1.5)
 
 def mobius_transform(points, a, b, c, d):
     '''Apply a Möbius transformation to a set of points directly in the points array.'''
@@ -43,7 +23,7 @@ def callback(step):
     # This works
     # actor.position = [step / 100.0, step / 100.0, 0]
 
-    points = planepoints.copy()
+    points = points_spiral.copy()
 
     a = 1 + np.cos(step / 100.0 - 0.5) + np.cos(step / 97.0 - 0.5)*1j
     b = np.cos(step / 86.3 - 0.5) + np.cos(step / 91.2 - 0.5)*1j
@@ -53,7 +33,7 @@ def callback(step):
     mobius_transform(points, a, b, c, d)
 
     # points[:, 0] += 0.5 * np.sin(step / 10.0)  # animate x-coordinates
-    grid_mask.points = points
+    lines_spiral.points = points
 
     # Not needed in this example, it forces a strict screen refresh on every tick
     p.render()
@@ -62,7 +42,7 @@ def callback(step):
 p.iren.initialize()
 
 # max_steps: The maximum number of times the timer callback will be called. 
-p.add_timer_event(max_steps=1000, duration=50, callback=callback)
+p.add_timer_event(max_steps=10000, duration=25, callback=callback)
 
 
 new_cpos = pv.CameraPosition(
