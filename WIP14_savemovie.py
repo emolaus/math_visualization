@@ -1,7 +1,12 @@
+# from __future__ import annotations
 import numpy as np
 import indrautils as iu
 import pyvista as pv
 from PIL import Image
+'''
+Tricket är att inte rendera en animation. Så, gör inte p.show(), använd inte timer, utan stega fram efter varje rendering.
+'''
+make_movie = False
 
 # Load a mask
 img = Image.open("fox.png").convert("L")  # grayscale
@@ -51,10 +56,6 @@ def mobius_transform(points, a, b, c, d):
     points[:, 1] = z1.imag
 
 def callback(step):
-    print(f"Timer event: step {step}")
-    # This works
-    # actor.position = [step / 100.0, step / 100.0, 0]
-
     points = points_plane.copy()
 
     a = 1 + np.cos(step / 100.0 - 0.5) + np.cos(step / 97.0 - 0.5)*1j
@@ -70,12 +71,20 @@ def callback(step):
     p.add_mesh(warped, scalars="intensity", cmap="gray", show_scalar_bar=False, name='mask')
 
     # Not needed in this example, it forces a strict screen refresh on every tick
-    p.render()
+    # p.render()
+    if make_movie:
+        p.write_frame()
 
-# Explicitly initialize the interactor before adding the timer
-p.iren.initialize()
 
-# max_steps: The maximum number of times the timer callback will be called. 
-p.add_timer_event(max_steps=250, duration=50, callback=callback)
+if make_movie:
+    p.open_movie("mobius_elevation_test.mp4", framerate=25)
 
-p.show()
+# p.show()
+
+if make_movie:
+    for i in range(250):
+        print(f"Writing frame {i}")
+        callback(i+1)
+        
+
+p.close()
