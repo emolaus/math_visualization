@@ -21,7 +21,9 @@ for i in range(18):
         y_end = y_start + 25
         x_start = j * 50
         x_end = x_start + 25
-        img[y_start:y_end, x_start:x_end] = 0.5 + 0.5 * np.random.random()
+        img[y_start:y_end, x_start:x_end] = 0.2 + 0.8 * np.random.random()
+
+
 
 # Grid in plane
 x = np.linspace(-1, 1, w)
@@ -50,6 +52,8 @@ def mobius_transform(points, a, b, c, d):
     points[:, 0] = z1.real
     points[:, 1] = z1.imag
 
+max_steps = 250
+duration = 100  # milliseconds between timer events
 def callback(step):
     print(f"Timer event: step {step}")
     # This works
@@ -57,15 +61,34 @@ def callback(step):
 
     points = points_plane.copy()
 
-    a = 1 + np.cos(step / 100.0 - 0.5) + np.cos(step / 97.0 - 0.5)*1j
-    b = np.cos(step / 86.3 - 0.5) + np.cos(step / 91.2 - 0.5)*1j
-    c = np.cos(step / 94.3 - 0.5) + np.cos(step / 67.3 - 0.5)*1j
-    d = 1 + np.cos(step / 54.3 - 0.5) + np.cos(step / 92.3 - 0.5)*1j
+    seconds = step * duration / 1000.0  # convert to seconds for smoother animation 
 
+    ### Möbius transformation with time-varying parameters
+    radians = seconds * 2 * np.pi  # convert to radians for smooth periodic motion
+    t = radians/5.0
+    a = 1 + np.sin(t*0.11) + np.sin(t*0.23)*1j
+    b = np.sin(t*0.05) + np.sin(t*0.17)*1j
+    c = np.sin(t*0.29) + np.sin(t*0.09)*1j
+    d = 1 + np.sin(t*0.151) + np.sin(t*0.37)*1j
     mobius_transform(points, a, b, c, d)
+
+    # Animated waves on elevation
+    img1 = img.copy()
+    for i in range(w):
+        t1 = i / w * 2 * np.pi + t  # add time component for animation
+        img1[:, i] += 0.2 * np.sin(t1*2)
+
+    ### Swirling transformation
+    t = radians/10.0
+    theta = 0.3
+    z0 = (points[:, 0]*t + 1j * points[:, 1]*t)*(np.cos(theta) + 1j * np.sin(theta))
+    z1 = np.exp(z0)
+    points[:, 0] = z1.real
+    points[:, 1] = z1.imag
 
     # points[:, 0] += 0.5 * np.sin(step / 10.0)  # animate x-coordinates
     grid_plane_fox.points = points
+    grid_plane_fox["elevation"] = img1.ravel().astype(float)
     warped = grid_plane_fox.warp_by_scalar('elevation', factor=0.5)
     p.add_mesh(warped, scalars="intensity", cmap="gray", show_scalar_bar=False, name='mask')
 
@@ -76,6 +99,7 @@ def callback(step):
 p.iren.initialize()
 
 # max_steps: The maximum number of times the timer callback will be called. 
-p.add_timer_event(max_steps=250, duration=50, callback=callback)
+p.add_timer_event(max_steps=max_steps, duration=duration, callback=callback)
+
 
 p.show()
