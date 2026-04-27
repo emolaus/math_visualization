@@ -1,0 +1,3 @@
+.venv*
+pyvista_anim.egg-info
+__pycache__

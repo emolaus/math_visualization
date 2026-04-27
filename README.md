@@ -22,3 +22,8 @@ Update indrautils.py
 - project_sphere_to_plane -> return z as well
 
 Update existing examples
+
+# branch better_architecture
+I want to find a better way to structure test code.
+- reusable animations
+- animate or make video by parameter passing

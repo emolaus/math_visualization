@@ -1,0 +1,21 @@
+from __future__ import annotations
+
+from pyvista_anim.animations import BendPoints, FadeElevation, WaveElevation
+from pyvista_anim.timeline import Parallel, Sequence
+
+
+def make_default_scene(duration: float):
+    """A small demo scene combining parallel and serial animation."""
+    first = min(duration * 0.6, duration)
+    second = max(duration - first, 0.1)
+
+    return Sequence(
+        Parallel(
+            WaveElevation(duration=first, amplitude=0.8, speed=3.0, cycles=1.5),
+            BendPoints(duration=first, amplitude=0.12, cycles=1.0),
+        ),
+        Parallel(
+            WaveElevation(duration=second, amplitude=0.3, speed=-2.0, cycles=2.0),
+            FadeElevation(duration=second),
+        ),
+    )

@@ -1,0 +1,16 @@
+[project]
+name = "pyvista-anim"
+version = "0.1.0"
+description = "Small architecture for mathematical PyVista StructuredGrid animations"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy>=1.26",
+    "pyvista>=0.43",
+]
+
+[project.scripts]
+pyvista-anim = "pyvista_anim.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
