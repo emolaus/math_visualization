@@ -38,8 +38,8 @@ class WaveElevation:
         xx, _ = np.meshgrid(x + t * self.speed, y, indexing="xy")
         wave = self.amplitude * np.sin(xx)
 
-        state.elevation[:] += wave
-        state.intensity[:] = state.elevation
+        state.elevation[:] += wave + state.base_elevation
+        state.intensity[:] = state.elevation + state.base_elevation
 
 
 class BendPoints:

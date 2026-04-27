@@ -19,3 +19,15 @@ def make_default_scene(duration: float):
             FadeElevation(duration=second),
         ),
     )
+
+def test_scene_1(duration: float):
+    """Test that the default scene can be created and applied to a state."""
+    first = min(duration * 0.6, duration)
+    second = max(duration - first, 0.1)
+
+    return Sequence(
+        Parallel(
+            WaveElevation(duration=first, amplitude=0.8, speed=3.0, cycles=1.5),
+            BendPoints(duration=first, amplitude=0.12, cycles=1.0),
+        )
+    )

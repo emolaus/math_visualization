@@ -4,8 +4,8 @@ import argparse
 import random
 
 from pyvista_anim.render import render_interactive, render_movie, render_single_frame
-from pyvista_anim.scenes import make_default_scene
-from pyvista_anim.state import make_grid_state
+from pyvista_anim.scenes import make_default_scene, test_scene_1
+from pyvista_anim.state import make_grid_state, make_grid_state_city_1
 from pyvista_anim.view import StructuredGridView
 
 
@@ -41,9 +41,12 @@ def main() -> None:
 
     print(args)
 
-    state = make_grid_state(args.width, args.height)
+    # state = make_grid_state(args.width, args.height)
+    state = make_grid_state_city_1(args.width, args.height)
     view = StructuredGridView(state, warp_factor=args.warp_factor)
-    scene = make_default_scene(args.time)
+    
+    # scene = make_default_scene(args.time)
+    scene = test_scene_1(args.time)
 
     if args.singleframe:
         render_single_frame(state, scene, view, t=args.debugval)
