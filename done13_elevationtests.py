@@ -62,9 +62,9 @@ def callback(step):
     points = points_plane.copy()
 
     seconds = step * duration / 1000.0  # convert to seconds for smoother animation 
+    radians = seconds * 2 * np.pi  # convert to radians for smooth periodic motion
 
     ### Möbius transformation with time-varying parameters
-    radians = seconds * 2 * np.pi  # convert to radians for smooth periodic motion
     t = radians/5.0
     a = 1 + np.sin(t*0.11) + np.sin(t*0.23)*1j
     b = np.sin(t*0.05) + np.sin(t*0.17)*1j
@@ -79,12 +79,12 @@ def callback(step):
         img1[:, i] += 0.2 * np.sin(t1*2)
 
     ### Swirling transformation
-    t = radians/10.0
-    theta = 0.3
-    z0 = (points[:, 0]*t + 1j * points[:, 1]*t)*(np.cos(theta) + 1j * np.sin(theta))
-    z1 = np.exp(z0)
-    points[:, 0] = z1.real
-    points[:, 1] = z1.imag
+    # t = radians/10.0
+    # theta = 0.3
+    # z0 = (points[:, 0]*t + 1j * points[:, 1]*t)*(np.cos(theta) + 1j * np.sin(theta))
+    # z1 = np.exp(z0)
+    # points[:, 0] = z1.real
+    # points[:, 1] = z1.imag
 
     # points[:, 0] += 0.5 * np.sin(step / 10.0)  # animate x-coordinates
     grid_plane_fox.points = points
