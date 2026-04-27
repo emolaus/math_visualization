@@ -59,6 +59,27 @@ class BendPoints:
             2.0 * np.pi * self.cycles * phase + x * np.pi
         )
 
+class RotatePoints:
+    """Rotate the grid points around the z-axis while preserving the base geometry."""
+
+    def __init__(self, duration: float, angle: float = 360.0):
+        self.duration = duration
+        self.angle = np.radians(angle)
+
+    def apply(self, state: GridState, t: float) -> None:
+        phase = t / self.duration if self.duration > 0.0 else 1.0
+        points = state.points
+        base_points = state.base_points
+
+        theta = self.angle * phase
+        cos_theta = np.cos(theta)
+        sin_theta = np.sin(theta)
+
+        x = base_points[:, 0]
+        y = base_points[:, 1]
+
+        points[:, 0] = cos_theta * x - sin_theta * y
+        points[:, 1] = sin_theta * x + cos_theta * y
 
 class FadeElevation:
     """Scale the current elevation down to zero over the animation duration."""
@@ -68,5 +89,5 @@ class FadeElevation:
 
     def apply(self, state: GridState, t: float) -> None:
         phase = min(max(t / self.duration, 0.0), 1.0) if self.duration > 0.0 else 1.0
-        state.elevation[:] *= 1.0 - phase
+        state.elevation[:] *= 1.0 - phase 
         state.intensity[:] = state.elevation

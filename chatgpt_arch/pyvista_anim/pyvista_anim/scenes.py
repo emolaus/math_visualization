@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pyvista_anim.animations import BendPoints, FadeElevation, WaveElevation
+from pyvista_anim.animations import BendPoints, FadeElevation, WaveElevation, RotatePoints
 from pyvista_anim.timeline import Parallel, Sequence
 
 
@@ -29,5 +29,16 @@ def test_scene_1(duration: float):
         Parallel(
             WaveElevation(duration=first, amplitude=0.8, speed=3.0, cycles=1.5),
             BendPoints(duration=first, amplitude=0.12, cycles=1.0),
+        ),
+    )
+
+def test_scene_2(duration: float):
+    """Test that the default scene can be created and applied to a state."""
+    first = min(duration * 0.6, duration)
+    second = max(duration - first, 0.1)
+
+    return Sequence(
+        Parallel(
+            RotatePoints(duration=first, angle=30.0),
         )
     )

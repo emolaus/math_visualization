@@ -26,7 +26,7 @@ class GridState:
         """Reset mutable state to the flat/base frame."""
         self.points[:] = self.base_points
         self.elevation[:] = self.base_elevation
-        self.intensity[:] = 0.0
+        self.intensity[:] = self.base_elevation
 
 
 def make_grid_state(w: int, h: int) -> GridState:
@@ -80,7 +80,7 @@ def make_grid_state_city_1(w: int, h: int) -> GridState:
             y_end = y_start + block_height
             x_start = j * 2 * block_width
             x_end = x_start + block_width
-            elevation[y_start:y_end, x_start:x_end] = 0.5 + 1.8 * np.random.random()
+            elevation[y_start:y_end, x_start:x_end] = 0.5 + 1.0 * np.random.random()
     base_elevation = elevation.copy()
     intensity = elevation.copy()
 
