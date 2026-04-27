@@ -46,7 +46,7 @@ def main() -> None:
     view = StructuredGridView(state, warp_factor=args.warp_factor)
     
     # scene = make_default_scene(args.time)
-    scene = test_scene_2(args.time)
+    scene = test_scene_2(args.time, rate=2.0)
 
     if args.singleframe:
         render_single_frame(state, scene, view, t=args.debugval)

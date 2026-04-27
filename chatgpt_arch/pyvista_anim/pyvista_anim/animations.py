@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Protocol
 
+from matplotlib.pyplot import step
+from matplotlib.pyplot import step
 import numpy as np
 
 from pyvista_anim.state import GridState
@@ -80,6 +82,49 @@ class RotatePoints:
 
         points[:, 0] = cos_theta * x - sin_theta * y
         points[:, 1] = sin_theta * x + cos_theta * y
+
+class RandomMobius:
+    """Randomly perturb points in a Möbius-like way."""
+
+    def __init__(self, duration: float, rate: float = 1.0):
+        self.duration = duration
+        self.rate = rate
+
+    def apply(self, state: GridState, t: float) -> None:
+        step = int(t / 0.04)
+        seconds = step * self.duration / 1000.0  # convert to seconds for smoother animation 
+        radians = seconds * 2 * np.pi  # convert to radians for smooth periodic motion
+
+    # ### Möbius transformation with time-varying parameters
+        t = radians*self.rate
+        a = 1 + np.sin(t*0.11) + np.sin(t*0.23)*1j
+        b = np.sin(t*0.05) + np.sin(t*0.17)*1j
+        c = np.sin(t*0.29) + np.sin(t*0.09)*1j
+        d = 1 + np.sin(t*0.151) + np.sin(t*0.37)*1j
+        self._mobius_transform(state.points, a, b, c, d, normalize=True)
+
+    def _mobius_transform(self, points, a, b, c, d, normalize=True):
+        '''Apply a Möbius transformation to a set of points directly in the points array.'''
+        
+        # determinant
+        det = a*d - b*c
+        if np.isclose(det, 0):
+            raise ValueError("Not a valid Möbius transform: ad - bc = 0")
+        
+        if normalize:
+            # normalize so determinant = 1
+            lam = 1 / np.sqrt(det)
+            a *= lam
+            b *= lam
+            c *= lam
+            d *= lam
+
+        x = points[:, 0]
+        y = points[:, 1]
+        z0 = x + 1j * y
+        z1 = (a * z0 + b) / (c * z0 + d)
+        points[:, 0] = z1.real
+        points[:, 1] = z1.imag
 
 class FadeElevation:
     """Scale the current elevation down to zero over the animation duration."""
