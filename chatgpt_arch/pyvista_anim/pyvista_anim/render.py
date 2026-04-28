@@ -35,11 +35,12 @@ def render_single_frame(
     scene: Animation,
     view: StructuredGridView,
     t: float,
+    cmap: str = "gray",
 ) -> None:
     state.reset()
     scene.apply(state, t)
 
-    renderer = PyVistaRenderer(view)
+    renderer = PyVistaRenderer(view, cmap=cmap)
     renderer.render_frame()
     renderer.plotter.show()
 
@@ -50,8 +51,9 @@ def render_movie(
     view: StructuredGridView,
     filename: str,
     fps: int,
+    cmap: str = "gray",
 ) -> None:
-    renderer = PyVistaRenderer(view)
+    renderer = PyVistaRenderer(view, cmap=cmap)
     plotter = renderer.plotter
 
     plotter.open_movie(filename, framerate=fps)
@@ -74,8 +76,9 @@ def render_interactive(
     scene: Animation,
     view: StructuredGridView,
     fps: int,
+    cmap: str = "gray",
 ) -> None:
-    renderer = PyVistaRenderer(view)
+    renderer = PyVistaRenderer(view, cmap=cmap)
     plotter = renderer.plotter
 
     duration_ms = int(1000 / fps)

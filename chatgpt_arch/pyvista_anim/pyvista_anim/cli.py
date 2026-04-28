@@ -7,6 +7,7 @@ from pyvista_anim.render import render_interactive, render_movie, render_single_
 from pyvista_anim.scenes import make_default_scene, test_scene_1, test_scene_2, test_scene_3
 from pyvista_anim.state import make_grid_state, make_grid_state_city_1
 from pyvista_anim.view import StructuredGridView
+from pyvista_anim.colormaps import happy_colormap
 
 
 def parse_args() -> argparse.Namespace:
@@ -49,13 +50,15 @@ def main() -> None:
     # scene = test_scene_2(args.time, rate=2.0)
     scene = test_scene_3(args.time)
 
+    colormap = happy_colormap(state.intensity.min(), state.intensity.max())
+
     if args.singleframe:
         render_single_frame(state, scene, view, t=args.debugval)
     elif args.movie:
         render_movie(state, scene, view, filename=args.name, fps=args.framerate)
         print(f"Made movie {args.name}")
     else:
-        render_interactive(state, scene, view, fps=args.framerate)
+        render_interactive(state, scene, view, fps=args.framerate, cmap=colormap)
 
 
 if __name__ == "__main__":
