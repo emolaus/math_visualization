@@ -43,12 +43,12 @@ def main() -> None:
     print(args)
 
     # state = make_grid_state(args.width, args.height)
-    state = make_grid_state_city(args.width, args.height)
+    state = make_grid_state_city(args.width, args.height, block_count=int(args.debugval))
     view = StructuredGridView(state, warp_factor=args.warp_factor)
     
     # scene = make_default_scene(args.time)
     # scene = test_scene_2(args.time, rate=2.0)
-    scene = test_scene_3(args.time)
+    scene = test_scene_1(args.time)
 
     colormap = happy_colormap(state.intensity.min(), state.intensity.max())
 

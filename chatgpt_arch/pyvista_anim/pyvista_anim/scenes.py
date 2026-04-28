@@ -28,8 +28,8 @@ def test_scene_1(duration: float):
 
     return Sequence(
         Parallel(
-            WaveElevation(duration=first, amplitude=0.8, speed=3.0, cycles=1.5),
-            BendPoints(duration=first, amplitude=0.12, cycles=1.0),
+            WaveElevation(duration=first, amplitude=0.01, speed=3.0, cycles=1.5),
+            # BendPoints(duration=first, amplitude=0.12, cycles=1.0),
         ),
     )
 
