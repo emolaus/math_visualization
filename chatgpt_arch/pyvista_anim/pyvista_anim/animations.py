@@ -68,17 +68,34 @@ class RotatePoints:
     def apply(self, state: GridState, t: float) -> None:
         phase = t / self.duration if self.duration > 0.0 else 1.0
         points = state.points
-        base_points = state.base_points
+        # base_points = state.base_points
 
         theta = self.angle * phase
         cos_theta = np.cos(theta)
         sin_theta = np.sin(theta)
 
-        x = base_points[:, 0]
-        y = base_points[:, 1]
+        x = points[:, 0]
+        y = points[:, 1]
 
         points[:, 0] = cos_theta * x - sin_theta * y
         points[:, 1] = sin_theta * x + cos_theta * y
+
+class SimpleScalePoints:
+    """Scale the grid points up and down while preserving the base geometry."""
+
+    def __init__(self, duration: float, scale: float = 1.5):
+        self.duration = duration
+        self.scale = scale
+
+    def apply(self, state: GridState, t: float) -> None:
+        phase = t / self.duration if self.duration > 0.0 else 1.0
+        points = state.points
+        # base_points = state.base_points
+
+        s = 1.0 + (self.scale - 1.0) * phase
+
+        points[:, 0] = points[:, 0] * s
+        points[:, 1] = points[:, 1] * s
 
 class RandomMobius:
     """Randomly perturb points in a Möbius-like way."""
@@ -122,6 +139,22 @@ class RandomMobius:
         z1 = (a * z0 + b) / (c * z0 + d)
         points[:, 0] = z1.real
         points[:, 1] = z1.imag
+
+class SimpleExpPoints:
+    """Swirl the grid points around the center while preserving the base geometry."""
+
+    def __init__(self, duration: float, strength: float = 0.5):
+        self.duration = duration
+        self.strength = strength
+
+    def apply(self, state: GridState, t: float) -> None:
+        pass
+        theta = 0.3
+        z0 = (1j * theta * 2* np.pi)
+        z1 = np.exp(z0)
+        state.points[:, 0] = z1.real
+        state.points[:, 1] = z1.imag
+
 
 class SwirlPoints:
     """Swirl the grid points around the center while preserving the base geometry."""
