@@ -38,7 +38,7 @@ You may need a working PyVista/VTK rendering setup and movie writer support in y
 pyvista-anim --singleframe --debugval 1.5
 ```
 ## Feature desires
-* Less dependence on elevation warping
+* Remove dependence on elevation warping
 * Parameter Animations with easing curves
 * Treat animations like transformations so that they can be composed: S*T*A
 * Wave animation on elevation

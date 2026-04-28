@@ -4,6 +4,28 @@ from dataclasses import dataclass
 
 import numpy as np
 
+def make_city_grid(w: int, h: int, block_count: int = 10, max_height: float = 1.0, random: bool = True, min_height: float = 0.2) -> np.ndarray:
+    """Make a grid of building blocks with random heights."""
+    x = np.linspace(-1.0, 1.0, w)
+    y = np.linspace(-1.0, 1.0, h)
+
+    xx, yy = np.meshgrid(x, y, indexing="xy")
+    zz = np.zeros_like(xx)
+
+    block_width = w // block_count
+    block_height = h // block_count
+    for i in range(block_count):
+        for j in range(block_count):
+            y_start = i * 2 * block_height
+            y_end = y_start + block_height
+            x_start = j * 2 * block_width
+            x_end = x_start + block_width
+            height = max_height
+            if random:
+                height = min_height + (max_height - min_height) * np.random.random()
+            zz[y_start:y_end, x_start:x_end] = height
+
+    return np.c_[xx.ravel(), yy.ravel(), zz.ravel()]
 
 @dataclass
 class GridState:
@@ -25,8 +47,9 @@ class GridState:
     def reset(self) -> None:
         """Reset mutable state to the flat/base frame."""
         self.points[:] = self.base_points
-        self.elevation[:] = self.base_elevation
-        self.intensity[:] = self.base_elevation
+        self.elevation[:] = np.zeros((self.h,self.w), dtype=float)
+        self.elevation[:] = np.zeros((self.h,self.w), dtype=float)
+        self.intensity[:] = self.base_points[:,2]
 
 
 def make_grid_state(w: int, h: int) -> GridState:
@@ -84,10 +107,26 @@ def make_grid_state_city_1(w: int, h: int) -> GridState:
     base_elevation = elevation.copy()
     intensity = elevation.copy()
 
-        # y_start = i * 50
-        # y_end = y_start + 25
-        # x_start = j * 50
-        # x_end = x_start + 25
+    return GridState(
+        base_points=base_points,
+        points=base_points.copy(),
+        elevation=elevation,
+        base_elevation=base_elevation,
+        intensity=intensity,
+        w=w,
+        h=h,
+    )
+
+def make_grid_state_city_2(w: int, h: int, block_count: int = 10) -> GridState:
+    """Create a flat rectangular grid state in the x/y plane.
+
+    Arrays shaped like images use shape `(h, w)`.
+    PyVista point arrays use shape `(h * w, 3)`.
+    """
+    base_points = make_city_grid(w, h, block_count=block_count)
+    elevation = np.zeros((h, w), dtype=float)
+    base_elevation = elevation.copy()
+    intensity = base_points[:,2].copy()
 
     return GridState(
         base_points=base_points,

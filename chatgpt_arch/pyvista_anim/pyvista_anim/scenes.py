@@ -46,7 +46,7 @@ def test_scene_3(duration: float):
     ''' Test the SwirlPoints animation. '''
     return Sequence(
         Parallel(
-            SwirlPoints(duration=duration, strength=0.5),
-            # WaveElevation(duration=duration, amplitude=0.4, speed=2.0, cycles=1.5),
+            # SwirlPoints(duration=duration, strength=0.5),
+            WaveElevation(duration=duration, amplitude=0.4, speed=2.0, cycles=1.5),
         )
     )

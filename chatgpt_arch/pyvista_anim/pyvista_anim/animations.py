@@ -19,7 +19,7 @@ class Animation(Protocol):
 
 
 class WaveElevation:
-    """Write a traveling sine wave into `state.elevation`."""
+    """Write a traveling sine wave onto the grid elevation (z)."""
 
     def __init__(
         self,
@@ -39,9 +39,10 @@ class WaveElevation:
 
         xx, _ = np.meshgrid(x + t * self.speed, y, indexing="xy")
         wave = self.amplitude * np.sin(xx)
+        state.points[:, 2] = wave.ravel() + state.base_points[:, 2]
 
-        state.elevation[:] += wave + state.base_elevation
-        state.intensity[:] = state.elevation + state.base_elevation
+        # state.elevation[:] += wave + state.base_elevation
+        # state.intensity[:] = state.elevation + state.base_elevation
 
 
 class BendPoints:
