@@ -47,6 +47,9 @@ def test_scene_3(duration: float):
     return Sequence(
         Parallel(
             # SwirlPoints(duration=duration, strength=0.5),
-            WaveElevation(duration=duration, amplitude=0.4, speed=2.0, cycles=1.5),
+            WaveElevation(duration=duration*0.5, amplitude=0.4, speed=2.0, cycles=1.5),
+        ),
+        Parallel(
+            FadeElevation(duration=duration * 0.5),
         )
     )

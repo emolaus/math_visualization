@@ -143,12 +143,15 @@ class SwirlPoints:
         state.points[:, 1] = z1.imag
 
 class FadeElevation:
-    """Scale the current elevation down to zero over the animation duration."""
+    """Scale the current elevation down to zero over the animation duration.
+    This is not correct or useful at the moment
+    """
 
     def __init__(self, duration: float):
         self.duration = duration
 
     def apply(self, state: GridState, t: float) -> None:
         phase = min(max(t / self.duration, 0.0), 1.0) if self.duration > 0.0 else 1.0
-        state.elevation[:] *= 1.0 - phase 
-        state.intensity[:] = state.elevation
+        # state.points[:, 2] *= 1.0 - phase
+        state.points[:,2] = state.base_points[:,2] + state.points[:,2] * (1.0 - phase)
+        state.intensity = state.points[:, 2]
