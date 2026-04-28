@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pyvista_anim.animations import BendPoints, FadeElevation, RandomMobius, WaveElevation, RotatePoints
+from pyvista_anim.animations import BendPoints, FadeElevation, RandomMobius, SwirlPoints, WaveElevation, RotatePoints
 from pyvista_anim.timeline import Parallel, Sequence
 
 
@@ -37,7 +37,16 @@ def test_scene_2(duration: float, rate: float = 2.0):
     
     return Sequence(
         Parallel(
-            RandomMobius(duration=duration, rate=rate),
-            WaveElevation(duration=duration, amplitude=0.4, speed=2.0, cycles=1.5),
+            SwirlPoints(duration=duration, rate=rate),
+            # WaveElevation(duration=duration, amplitude=0.4, speed=2.0, cycles=1.5),
+        )
+    )
+
+def test_scene_3(duration: float):
+    ''' Test the SwirlPoints animation. '''
+    return Sequence(
+        Parallel(
+            SwirlPoints(duration=duration, strength=0.5),
+            # WaveElevation(duration=duration, amplitude=0.4, speed=2.0, cycles=1.5),
         )
     )

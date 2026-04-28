@@ -126,6 +126,21 @@ class RandomMobius:
         points[:, 0] = z1.real
         points[:, 1] = z1.imag
 
+class SwirlPoints:
+    """Swirl the grid points around the center while preserving the base geometry."""
+
+    def __init__(self, duration: float, strength: float = 0.5):
+        self.duration = duration
+        self.strength = strength
+
+    def apply(self, state: GridState, t: float) -> None:
+        pass
+        theta = 0.3
+        z0 = (state.points[:, 0]*t + 1j * state.points[:, 1]*t)*(np.cos(theta) + 1j * np.sin(theta))
+        z1 = np.exp(z0)
+        state.points[:, 0] = z1.real
+        state.points[:, 1] = z1.imag
+
 class FadeElevation:
     """Scale the current elevation down to zero over the animation duration."""
 
