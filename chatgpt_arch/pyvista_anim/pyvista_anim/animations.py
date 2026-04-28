@@ -41,10 +41,6 @@ class WaveElevation:
         wave = self.amplitude * np.sin(xx)
         state.points[:, 2] = wave.ravel() + state.base_points[:, 2]
 
-        # state.elevation[:] += wave + state.base_elevation
-        # state.intensity[:] = state.elevation + state.base_elevation
-
-
 class BendPoints:
     """Bend the grid points sideways while preserving the base geometry."""
 
@@ -143,7 +139,8 @@ class SwirlPoints:
         state.points[:, 1] = z1.imag
 
 class FadeElevation:
-    """Scale the current elevation down to zero over the animation duration.
+    """ OUTDATED, DO NOT USE
+    Scale the current elevation down to zero over the animation duration.
     This is not correct or useful at the moment
     """
 
