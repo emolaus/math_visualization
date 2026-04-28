@@ -50,8 +50,8 @@ def make_grid_state(w: int, h: int) -> GridState:
 
 def make_city_grid(w: int, h: int, block_count: int = 10, max_height: float = 1.0, random: bool = True, min_height: float = 0.2) -> np.ndarray:
     """Make a grid of building blocks with random heights."""
-    x = np.linspace(-1.0, 1.0, w)
-    y = np.linspace(-1.0, 1.0, h)
+    x = np.linspace(0.0, 1.0, w)
+    y = np.linspace(0.0, 6.28, h)
 
     xx, yy = np.meshgrid(x, y, indexing="xy") # indexing="xy" is default
     zz = np.zeros_like(xx)

@@ -4,7 +4,7 @@ import argparse
 import random
 
 from pyvista_anim.render import render_interactive, render_movie, render_single_frame
-from pyvista_anim.scenes import make_default_scene, test_scene_1, test_scene_2, test_scene_3
+from pyvista_anim.scenes import make_default_scene, test_scene_1, test_scene_2, test_scene_3, test_scene_4
 from pyvista_anim.state import make_grid_state, make_grid_state_city
 from pyvista_anim.view import StructuredGridView
 from pyvista_anim.colormaps import happy_colormap
@@ -43,12 +43,12 @@ def main() -> None:
     print(args)
 
     # state = make_grid_state(args.width, args.height)
-    state = make_grid_state_city(args.width, args.height, block_count=int(args.debugval))
+    state = make_grid_state_city(args.width, args.height, block_count=20)
     view = StructuredGridView(state, warp_factor=args.warp_factor)
     
     # scene = make_default_scene(args.time)
     # scene = test_scene_2(args.time, rate=2.0)
-    scene = test_scene_1(args.time)
+    scene = test_scene_4(args.time)
 
     colormap = happy_colormap(state.intensity.min(), state.intensity.max())
 

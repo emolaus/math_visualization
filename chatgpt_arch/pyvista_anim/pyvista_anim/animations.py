@@ -83,19 +83,21 @@ class RotatePoints:
 class SimpleScalePoints:
     """Scale the grid points up and down while preserving the base geometry."""
 
-    def __init__(self, duration: float, scale: float = 1.5):
+    def __init__(self, duration: float, scale_x: float = 1.0, scale_y: float = 1.0):
         self.duration = duration
-        self.scale = scale
+        self.scale_x = scale_x
+        self.scale_y = scale_y
 
     def apply(self, state: GridState, t: float) -> None:
         phase = t / self.duration if self.duration > 0.0 else 1.0
         points = state.points
         # base_points = state.base_points
 
-        s = 1.0 + (self.scale - 1.0) * phase
+        s_x = 1.0 + (self.scale_x - 1.0) * phase
+        s_y = 1.0 + (self.scale_y - 1.0) * phase
 
-        points[:, 0] = points[:, 0] * s
-        points[:, 1] = points[:, 1] * s
+        points[:, 0] = points[:, 0] * s_x
+        points[:, 1] = points[:, 1] * s_y
 
 class RandomMobius:
     """Randomly perturb points in a Möbius-like way.
