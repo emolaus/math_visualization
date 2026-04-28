@@ -98,7 +98,9 @@ class SimpleScalePoints:
         points[:, 1] = points[:, 1] * s
 
 class RandomMobius:
-    """Randomly perturb points in a Möbius-like way."""
+    """Randomly perturb points in a Möbius-like way.
+    A rate of 2.0 is pretty calm, 10.0 is pretty wild.
+    """
 
     def __init__(self, duration: float, rate: float = 1.0):
         self.duration = duration
@@ -143,14 +145,17 @@ class RandomMobius:
 class SimpleExpPoints:
     """Swirl the grid points around the center while preserving the base geometry."""
 
-    def __init__(self, duration: float, strength: float = 0.5):
+    def __init__(self, duration: float, final_angle: float = 2 * np.pi):
         self.duration = duration
-        self.strength = strength
+        self.final_angle = final_angle # ignored for now
 
     def apply(self, state: GridState, t: float) -> None:
-        pass
         theta = 0.3
-        z0 = (1j * theta * 2* np.pi)
+        points = state.points.copy()
+        points[:, 1] -= points[:, 1].min()
+        points[:, 1] /= points[:, 1].max()
+        points[:, 1] *= np.pi * 2 * t/self.duration
+        z0 = points[:, 0] + 1j * points[:, 1]
         z1 = np.exp(z0)
         state.points[:, 0] = z1.real
         state.points[:, 1] = z1.imag

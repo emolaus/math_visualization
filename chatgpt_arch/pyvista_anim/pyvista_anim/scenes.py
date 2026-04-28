@@ -1,6 +1,7 @@
 from __future__ import annotations
+import numpy as np
 
-from pyvista_anim.animations import BendPoints, FadeElevation, RandomMobius, SimpleScalePoints, SwirlPoints, WaveElevation, RotatePoints
+from pyvista_anim.animations import BendPoints, FadeElevation, RandomMobius, SimpleScalePoints, SwirlPoints, WaveElevation, RotatePoints, SimpleExpPoints
 from pyvista_anim.timeline import Parallel, Sequence
 
 
@@ -46,11 +47,8 @@ def test_scene_3(duration: float):
     ''' Test applying multiple points animations in parallel. '''
     return Sequence(
         Parallel(
-            WaveElevation(duration=duration, amplitude=0.1, speed=5.0, cycles = 1), #, speed=2.0, cycles=1.5
-        #     duration: float,
-        # amplitude: float = 1.0,
-        # speed: float = 1.0,
-        # cycles: float = 1.0,
-            RandomMobius(duration=duration, rate=2.0),
+            WaveElevation(duration=duration, amplitude=0.1, speed=5.0, cycles = 2), #, speed=2.0, cycles=1.5
+            # RandomMobius(duration=duration, rate=2.0),
+            SimpleExpPoints(duration=0.5, final_angle=2*np.pi),
         ),
     )
