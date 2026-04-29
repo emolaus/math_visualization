@@ -1,16 +1,18 @@
 from __future__ import annotations
 
+from typing import Optional
+
 import pyvista as pv
 
 from pyvista_anim.animations import Animation
 from pyvista_anim.state import GridState
-from pyvista_anim.view import StructuredGridView
+from pyvista_anim.view import View
 
 
 class PyVistaRenderer:
     """Owns plotting and movie/interactive output."""
 
-    def __init__(self, view: StructuredGridView, cmap: str = "gray"):
+    def __init__(self, view: View, cmap: str = "gray"):
         self.view = view
         self.cmap = cmap
         self.plotter = pv.Plotter()
@@ -21,24 +23,41 @@ class PyVistaRenderer:
         self._add_current_mesh()
 
     def _add_current_mesh(self) -> None:
-        self.plotter.add_mesh(
-            self.view.mesh,
-            cmap=self.cmap,
-            scalars="intensity",
-            show_scalar_bar=False,
-            name="surface",
-        )
+        mesh = self.view.mesh
+        if "intensity" in mesh.array_names:
+            self.plotter.add_mesh(
+                mesh,
+                cmap=self.cmap,
+                scalars="intensity",
+                show_scalar_bar=False,
+                name="surface",
+            )
+        else:
+            texture = getattr(self.view, "texture", None)
+            if texture is not None:
+                self.plotter.add_mesh(
+                    mesh,
+                    texture=texture,
+                    name="surface",
+                )
+            else:
+                self.plotter.add_mesh(
+                    mesh,
+                    name="surface",
+                )
 
 
 def render_single_frame(
-    state: GridState,
-    scene: Animation,
-    view: StructuredGridView,
-    t: float,
+    view: View,
+    t: float = 0.0,
+    *,
+    state: Optional[GridState] = None,
+    scene: Optional[Animation] = None,
     cmap: str = "gray",
 ) -> None:
-    state.reset()
-    scene.apply(state, t)
+    if state is not None and scene is not None:
+        state.reset()
+        scene.apply(state, t)
 
     renderer = PyVistaRenderer(view, cmap=cmap)
     renderer.render_frame()
@@ -46,25 +65,33 @@ def render_single_frame(
 
 
 def render_movie(
-    state: GridState,
-    scene: Animation,
-    view: StructuredGridView,
+    view: View,
     filename: str,
     fps: int,
+    duration: Optional[float] = None,
+    *,
+    state: Optional[GridState] = None,
+    scene: Optional[Animation] = None,
     cmap: str = "gray",
 ) -> None:
+    if duration is None and scene is not None:
+        duration = scene.duration
+    elif duration is None:
+        raise ValueError("Provide either 'scene' or 'duration'.")
+
     renderer = PyVistaRenderer(view, cmap=cmap)
     plotter = renderer.plotter
 
     plotter.open_movie(filename, framerate=fps)
 
-    n_frames = int(scene.duration * fps)
+    n_frames = int(duration * fps)
     for frame in range(n_frames + 1):
         t = frame / fps
         print(f"Writing frame {frame}/{n_frames}: t={t:.3f} s")
 
-        state.reset()
-        scene.apply(state, t)
+        if state is not None and scene is not None:
+            state.reset()
+            scene.apply(state, t)
         renderer.render_frame()
         plotter.write_frame()
 
@@ -72,24 +99,32 @@ def render_movie(
 
 
 def render_interactive(
-    state: GridState,
-    scene: Animation,
-    view: StructuredGridView,
+    view: View,
     fps: int,
+    duration: Optional[float] = None,
+    *,
+    state: Optional[GridState] = None,
+    scene: Optional[Animation] = None,
     cmap: str = "gray",
 ) -> None:
+    if duration is None and scene is not None:
+        duration = scene.duration
+    elif duration is None:
+        raise ValueError("Provide either 'scene' or 'duration'.")
+
     renderer = PyVistaRenderer(view, cmap=cmap)
     plotter = renderer.plotter
 
     duration_ms = int(1000 / fps)
-    max_steps = int(scene.duration * fps)
+    max_steps = int(duration * fps)
 
     def stepper(step: int) -> None:
         t = step / fps
         print(f"Timer event: step={step}, t={t:.3f} s")
 
-        state.reset()
-        scene.apply(state, t)
+        if state is not None and scene is not None:
+            state.reset()
+            scene.apply(state, t)
         renderer.render_frame()
 
     plotter.iren.initialize()
