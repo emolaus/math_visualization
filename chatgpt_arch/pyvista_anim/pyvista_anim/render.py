@@ -6,48 +6,8 @@ import pyvista as pv
 
 from pyvista_anim.object3D import Group3D
 from pyvista_anim.animations import Animation
-from pyvista_anim.state import GridState, PointsState
-from pyvista_anim.view import View
 
-
-class PyVistaRenderer:
-    """Owns plotting and movie/interactive output."""
-
-    def __init__(self, view: View, cmap: str = "gray"):
-        self.view = view
-        self.cmap = cmap
-        self.plotter = pv.Plotter()
-        self._add_current_mesh()
-
-    def render_frame(self) -> None:
-        self.view.update()
-        self._add_current_mesh()
-
-    def _add_current_mesh(self) -> None:
-        mesh = self.view.mesh
-        if "intensity" in mesh.array_names:
-            self.plotter.add_mesh(
-                mesh,
-                cmap=self.cmap,
-                scalars="intensity",
-                show_scalar_bar=False,
-                name="surface",
-            )
-        else:
-            texture = getattr(self.view, "texture", None)
-            if texture is not None:
-                self.plotter.add_mesh(
-                    mesh,
-                    texture=texture,
-                    name="surface",
-                )
-            else:
-                self.plotter.add_mesh(
-                    mesh,
-                    name="surface",
-                )
-
-class NewRenderer:
+class PyvistaRenderer:
     """Owns plotting and movie/interactive output."""
 
     def __init__(self, groups: list[Group3D], cmap: str = "gray"):
@@ -75,7 +35,7 @@ def render_single_frame(
     cmap: str = "gray",
 ) -> None:
 
-    renderer = NewRenderer(groups, cmap=cmap)
+    renderer = PyvistaRenderer(groups, cmap=cmap)
     renderer.render_frame()
     renderer.plotter.show()
 
@@ -93,7 +53,7 @@ def render_movie(
     elif duration is None:
         raise ValueError("Provide either 'scene' or 'duration'.")
 
-    renderer = NewRenderer(groups, cmap=cmap)
+    renderer = PyvistaRenderer(groups, cmap=cmap)
     plotter = renderer.plotter
 
     plotter.open_movie(filename, framerate=fps)
@@ -126,7 +86,7 @@ def render_interactive(
     elif duration is None:
         raise ValueError("Provide either 'scene' or 'duration'.")
 
-    renderer = NewRenderer(groups, cmap=cmap)
+    renderer = PyvistaRenderer(groups, cmap=cmap)
     plotter = renderer.plotter
 
     duration_ms = int(1000 / fps)

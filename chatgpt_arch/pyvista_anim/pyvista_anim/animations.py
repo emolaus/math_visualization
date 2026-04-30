@@ -3,11 +3,7 @@ from __future__ import annotations
 from typing import Protocol
 
 from matplotlib.pyplot import step
-from matplotlib.pyplot import step
 import numpy as np
-
-from pyvista_anim.state import GridState, PointsState
-
 
 class Animation(Protocol):
     """Anything that can mutate a pyvista points array (shape (n_points, 3)) at local time `t`."""
@@ -60,13 +56,14 @@ class WaveElevation:
         self.speed = speed
         self.cycles = cycles
 
-    def apply(self, state: GridState, t: float) -> None:
-        x = np.linspace(0.0, 2.0 * np.pi * self.cycles, state.w)
-        y = np.linspace(0.0, 1.0, state.h)
+    def apply(self, t: float) -> None:
+        pass
+        # x = np.linspace(0.0, 2.0 * np.pi * self.cycles, state.w)
+        # y = np.linspace(0.0, 1.0, state.h)
 
-        xx, _ = np.meshgrid(x + t * self.speed, y, indexing="xy")
-        wave = self.amplitude * np.sin(xx)
-        state.points[:, 2] = wave.ravel() + state.base_points[:, 2]
+        # xx, _ = np.meshgrid(x + t * self.speed, y, indexing="xy")
+        # wave = self.amplitude * np.sin(xx)
+        # state.points[:, 2] = wave.ravel() + state.base_points[:, 2]
 
 class BendPoints:
     """Bend the grid points sideways while preserving the base geometry."""
@@ -76,14 +73,15 @@ class BendPoints:
         self.amplitude = amplitude
         self.cycles = cycles
 
-    def apply(self, state: GridState, t: float) -> None:
-        phase = t / self.duration if self.duration > 0.0 else 1.0
-        points = state.points
-        x = state.base_points[:, 0]
+    def apply(self, t: float) -> None:
+        pass
+        # phase = t / self.duration if self.duration > 0.0 else 1.0
+        # points = state.points
+        # x = state.base_points[:, 0]
 
-        points[:, 1] += self.amplitude * np.sin(
-            2.0 * np.pi * self.cycles * phase + x * np.pi
-        )
+        # points[:, 1] += self.amplitude * np.sin(
+        #     2.0 * np.pi * self.cycles * phase + x * np.pi
+        # )
 
 class RotatePoints:
     """Rotate the grid points around the z-axis while preserving the base geometry."""
@@ -92,20 +90,21 @@ class RotatePoints:
         self.duration = duration
         self.angle = np.radians(angle)
 
-    def apply(self, state: GridState, t: float) -> None:
-        phase = t / self.duration if self.duration > 0.0 else 1.0
-        points = state.points
-        # base_points = state.base_points
+    def apply(self, t: float) -> None:
+        pass
+        # phase = t / self.duration if self.duration > 0.0 else 1.0
+        # points = state.points
+        # # base_points = state.base_points
 
-        theta = self.angle * phase
-        cos_theta = np.cos(theta)
-        sin_theta = np.sin(theta)
+        # theta = self.angle * phase
+        # cos_theta = np.cos(theta)
+        # sin_theta = np.sin(theta)
 
-        x = points[:, 0]
-        y = points[:, 1]
+        # x = points[:, 0]
+        # y = points[:, 1]
 
-        points[:, 0] = cos_theta * x - sin_theta * y
-        points[:, 1] = sin_theta * x + cos_theta * y
+        # points[:, 0] = cos_theta * x - sin_theta * y
+        # points[:, 1] = sin_theta * x + cos_theta * y
 
 class SimpleScalePoints:
     """Scale the grid points up and down while preserving the base geometry."""
@@ -115,16 +114,17 @@ class SimpleScalePoints:
         self.scale_x = scale_x
         self.scale_y = scale_y
 
-    def apply(self, state: GridState, t: float) -> None:
-        phase = t / self.duration if self.duration > 0.0 else 1.0
-        points = state.points
-        # base_points = state.base_points
+    def apply(self, t: float) -> None:
+        pass
+        # phase = t / self.duration if self.duration > 0.0 else 1.0
+        # points = state.points
+        # # base_points = state.base_points
 
-        s_x = 1.0 + (self.scale_x - 1.0) * phase
-        s_y = 1.0 + (self.scale_y - 1.0) * phase
+        # s_x = 1.0 + (self.scale_x - 1.0) * phase
+        # s_y = 1.0 + (self.scale_y - 1.0) * phase
 
-        points[:, 0] = points[:, 0] * s_x
-        points[:, 1] = points[:, 1] * s_y
+        # points[:, 0] = points[:, 0] * s_x
+        # points[:, 1] = points[:, 1] * s_y
 
 class RandomMobius:
     """Randomly perturb points in a Möbius-like way.
@@ -135,18 +135,19 @@ class RandomMobius:
         self.duration = duration
         self.rate = rate
 
-    def apply(self, state: GridState, t: float) -> None:
-        step = int(t / 0.04)
-        seconds = step * self.duration / 1000.0  # convert to seconds for smoother animation 
-        radians = seconds * 2 * np.pi  # convert to radians for smooth periodic motion
+    def apply(self, t: float) -> None:
+        pass
+    #     step = int(t / 0.04)
+    #     seconds = step * self.duration / 1000.0  # convert to seconds for smoother animation 
+    #     radians = seconds * 2 * np.pi  # convert to radians for smooth periodic motion
 
-    # ### Möbius transformation with time-varying parameters
-        t = radians*self.rate
-        a = 1 + np.sin(t*0.11) + np.sin(t*0.23)*1j
-        b = np.sin(t*0.05) + np.sin(t*0.17)*1j
-        c = np.sin(t*0.29) + np.sin(t*0.09)*1j
-        d = 1 + np.sin(t*0.151) + np.sin(t*0.37)*1j
-        self._mobius_transform(state.points, a, b, c, d, normalize=True)
+    # # ### Möbius transformation with time-varying parameters
+    #     t = radians*self.rate
+    #     a = 1 + np.sin(t*0.11) + np.sin(t*0.23)*1j
+    #     b = np.sin(t*0.05) + np.sin(t*0.17)*1j
+    #     c = np.sin(t*0.29) + np.sin(t*0.09)*1j
+    #     d = 1 + np.sin(t*0.151) + np.sin(t*0.37)*1j
+    #     self._mobius_transform(state.points, a, b, c, d, normalize=True)
 
     def _mobius_transform(self, points, a, b, c, d, normalize=True):
         '''Apply a Möbius transformation to a set of points directly in the points array.'''
@@ -178,16 +179,17 @@ class SimpleExpPoints:
         self.duration = duration
         self.final_angle = final_angle # ignored for now
 
-    def apply(self, state: GridState, t: float) -> None:
-        theta = 0.3
-        points = state.points.copy()
-        points[:, 1] -= points[:, 1].min()
-        points[:, 1] /= points[:, 1].max()
-        points[:, 1] *= np.pi * 2 * t/self.duration
-        z0 = points[:, 0] + 1j * points[:, 1]
-        z1 = np.exp(z0)
-        state.points[:, 0] = z1.real
-        state.points[:, 1] = z1.imag
+    def apply(self, t: float) -> None:
+        pass
+        # theta = 0.3
+        # points = state.points.copy()
+        # points[:, 1] -= points[:, 1].min()
+        # points[:, 1] /= points[:, 1].max()
+        # points[:, 1] *= np.pi * 2 * t/self.duration
+        # z0 = points[:, 0] + 1j * points[:, 1]
+        # z1 = np.exp(z0)
+        # state.points[:, 0] = z1.real
+        # state.points[:, 1] = z1.imag
 
 
 class SwirlPoints:
@@ -197,13 +199,13 @@ class SwirlPoints:
         self.duration = duration
         self.strength = strength
 
-    def apply(self, state: GridState, t: float) -> None:
+    def apply(self, t: float) -> None:
         pass
-        theta = 0.3
-        z0 = (state.points[:, 0]*t + 1j * state.points[:, 1]*t)*(np.cos(theta) + 1j * np.sin(theta))
-        z1 = np.exp(z0)
-        state.points[:, 0] = z1.real
-        state.points[:, 1] = z1.imag
+        # theta = 0.3
+        # z0 = (state.points[:, 0]*t + 1j * state.points[:, 1]*t)*(np.cos(theta) + 1j * np.sin(theta))
+        # z1 = np.exp(z0)
+        # state.points[:, 0] = z1.real
+        # state.points[:, 1] = z1.imag
 
 class FadeElevation:
     """ OUTDATED, DO NOT USE
@@ -214,8 +216,9 @@ class FadeElevation:
     def __init__(self, duration: float):
         self.duration = duration
 
-    def apply(self, state: GridState, t: float) -> None:
-        phase = min(max(t / self.duration, 0.0), 1.0) if self.duration > 0.0 else 1.0
-        # state.points[:, 2] *= 1.0 - phase
-        state.points[:,2] = state.base_points[:,2] + state.points[:,2] * (1.0 - phase)
-        state.intensity = state.points[:, 2]
+    def apply(self, t: float) -> None:
+        pass
+        # phase = min(max(t / self.duration, 0.0), 1.0) if self.duration > 0.0 else 1.0
+        # # state.points[:, 2] *= 1.0 - phase
+        # state.points[:,2] = state.base_points[:,2] + state.points[:,2] * (1.0 - phase)
+        # state.intensity = state.points[:, 2]

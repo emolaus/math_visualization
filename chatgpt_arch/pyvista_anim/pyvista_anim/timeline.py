@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from pyvista_anim.animations import Animation
-from pyvista_anim.state import GridState
 
 
 class Parallel:

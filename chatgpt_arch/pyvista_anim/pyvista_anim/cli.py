@@ -6,7 +6,6 @@ import random
 from pyvista_anim.animations import RandomMobius, RotatePoints
 from pyvista_anim.render import render_interactive, render_movie, render_single_frame
 from pyvista_anim.scenes import make_default_scene, test_scene_1, test_scene_2, test_scene_3, test_scene_4
-from pyvista_anim.state import make_grid_state, make_grid_state_city
 from pyvista_anim.view import PolyDataView, StructuredGridView
 from pyvista_anim.colormaps import happy_colormap
 
