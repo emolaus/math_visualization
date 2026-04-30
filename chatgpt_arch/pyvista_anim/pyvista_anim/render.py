@@ -80,12 +80,11 @@ def render_single_frame(
     renderer.plotter.show()
 
 def render_movie(
-    view: View,
+    groups: list[Group3D],
     filename: str,
     fps: int,
     duration: Optional[float] = None,
     *,
-    state: Optional[PointsState] = None,
     scene: Optional[Animation] = None,
     cmap: str = "gray",
 ) -> None:
@@ -94,7 +93,7 @@ def render_movie(
     elif duration is None:
         raise ValueError("Provide either 'scene' or 'duration'.")
 
-    renderer = PyVistaRenderer(view, cmap=cmap)
+    renderer = NewRenderer(groups, cmap=cmap)
     plotter = renderer.plotter
 
     plotter.open_movie(filename, framerate=fps)
@@ -104,9 +103,8 @@ def render_movie(
         t = frame / fps
         print(f"Writing frame {frame}/{n_frames}: t={t:.3f} s")
 
-        if state is not None and scene is not None:
-            state.reset()
-            scene.apply(state, t)
+        if scene is not None:
+            scene.apply(t)
         renderer.render_frame()
         plotter.write_frame()
 
@@ -142,7 +140,6 @@ def render_interactive(
         for group in groups:
             group.reset()
 
-        # TODO: Animate
         if scene is not None:
             scene.apply(t)
 
