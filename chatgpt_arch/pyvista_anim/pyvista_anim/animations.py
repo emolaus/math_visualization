@@ -31,6 +31,18 @@ class PointsTranslationX:
         phase = t / self.duration if self.duration > 0.0 else 1.0
         self.points[:, 0] += self.distance * phase
 
+class PointsNoiseZ:
+    """Add noise to the grid points in the z direction."""
+
+    def __init__(self, points: np.ndarray, duration: float, amplitude: float = 0.05):
+        self.points = points
+        self.duration = duration
+        self.amplitude = amplitude
+
+    def apply(self, t: float) -> None:
+        phase = t / self.duration if self.duration > 0.0 else 1.0
+        noise = self.amplitude * np.random.randn(self.points.shape[0]) * phase
+        self.points[:, 2] += noise
 
 class WaveElevation:
     """Write a traveling sine wave onto the grid elevation (z)."""

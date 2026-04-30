@@ -14,13 +14,13 @@ class Parallel:
         self.animations = animations
         self.duration = max(anim.duration for anim in animations)
 
-    def apply(self, state: GridState, t: float) -> None:
+    def apply(self, t: float) -> None:
         for anim in self.animations:
             if 0.0 <= t <= anim.duration:
-                anim.apply(state, t)
+                anim.apply(t)
             elif t > anim.duration:
                 # Hold each child at its final state.
-                anim.apply(state, anim.duration)
+                anim.apply(anim.duration)
 
 
 class Sequence:
