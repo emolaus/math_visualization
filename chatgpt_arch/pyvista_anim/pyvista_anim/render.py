@@ -4,6 +4,7 @@ from typing import Optional
 
 import pyvista as pv
 
+from pyvista_anim.object3D import Group3D
 from pyvista_anim.animations import Animation
 from pyvista_anim.state import GridState, PointsState
 from pyvista_anim.view import View
@@ -46,23 +47,39 @@ class PyVistaRenderer:
                     name="surface",
                 )
 
+class NewRenderer:
+    """Owns plotting and movie/interactive output."""
+
+    def __init__(self, groups: list[Group3D], cmap: str = "gray"):
+        self.groups = groups
+        # Name each group for later reference when adding to the plotter.
+        i = 0
+        for group in self.groups:
+            group.name = f"group_{i}"
+            i += 1
+        self.cmap = cmap
+        self.plotter = pv.Plotter()
+        self._add_current_mesh()
+
+    def render_frame(self) -> None:
+        self._add_current_mesh()
+
+    def _add_current_mesh(self) -> None:
+        for group in self.groups:
+            self.plotter.add_mesh(group.multiblock, cmap=self.cmap, show_scalar_bar=False, name=group.name)
+
 
 def render_single_frame(
-    view: View,
+    groups: list[Group3D],
     t: float = 0.0,
     *,
-    state: Optional[PointsState] = None,
     scene: Optional[Animation] = None,
     cmap: str = "gray",
 ) -> None:
-    if state is not None and scene is not None:
-        state.reset()
-        scene.apply(state, t)
 
-    renderer = PyVistaRenderer(view, cmap=cmap)
+    renderer = NewRenderer(groups, cmap=cmap)
     renderer.render_frame()
     renderer.plotter.show()
-
 
 def render_movie(
     view: View,

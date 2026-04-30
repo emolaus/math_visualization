@@ -35,12 +35,13 @@ class Group3D:
     multiblock: pv.MultiBlock
     all_base_points: np.ndarray
     all_points: np.ndarray
+    name: str # Used by the Renderer to identify the mesh in the plotter.
 
     def __init__(self, meshes: list[Object3D]):
         self.multiblock = pv.MultiBlock([mesh.mesh for mesh in meshes])
 
     def append(self, mesh: Object3D):
-        if self.all_base_points is not None:
+        if hasattr(self, "all_base_points"):
             raise ValueError("Cannot append to group after all_base_points has been generated.")
         self.multiblock.append(mesh.mesh)
 
@@ -55,3 +56,4 @@ class Group3D:
 
     def plot(self):
         self.multiblock.plot()
+
