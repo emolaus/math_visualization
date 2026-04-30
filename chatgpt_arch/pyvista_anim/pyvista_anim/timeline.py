@@ -33,19 +33,18 @@ class Sequence:
         self.animations = animations
         self.duration = sum(anim.duration for anim in animations)
 
-    def apply(self, state: GridState, t: float) -> None:
+    def apply(self, t: float) -> None:
         elapsed = 0.0
 
-        for anim in self.animations:
+        for i, anim in enumerate(self.animations):
             start = elapsed
             end = elapsed + anim.duration
-
             if start <= t < end:
-                anim.apply(state, t - start)
+                anim.apply(t - start)
                 return
 
             elapsed = end
 
         # Hold final frame after the sequence is over.
         last = self.animations[-1]
-        last.apply(state, last.duration)
+        last.apply(last.duration)

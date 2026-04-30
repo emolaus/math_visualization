@@ -22,14 +22,15 @@ class PointsTranslationX:
     
     """
 
-    def __init__(self, points: np.ndarray, duration: float, distance: float):
+    def __init__(self, points: np.ndarray, duration: float, distance: float, starting_point: float = 0.0):
         self.points = points
         self.duration = duration
         self.distance = distance
+        self.starting_point = starting_point
 
     def apply(self, t: float) -> None:
         phase = t / self.duration if self.duration > 0.0 else 1.0
-        self.points[:, 0] += self.distance * phase
+        self.points[:, 0] = self.starting_point + self.distance * phase
 
 class PointsNoiseZ:
     """Add noise to the grid points in the z direction."""
