@@ -53,10 +53,8 @@ class NewRenderer:
     def __init__(self, groups: list[Group3D], cmap: str = "gray"):
         self.groups = groups
         # Name each group for later reference when adding to the plotter.
-        i = 0
-        for group in self.groups:
+        for i, group in enumerate(self.groups):
             group.name = f"group_{i}"
-            i += 1
         self.cmap = cmap
         self.plotter = pv.Plotter()
         self._add_current_mesh()
@@ -114,13 +112,14 @@ def render_movie(
 
     plotter.close()
 
-
+'''
+This only supports a single animation at this point
+'''
 def render_interactive(
-    view: View,
+    groups: list[Group3D],
     fps: int,
     duration: Optional[float] = None,
     *,
-    state: Optional[PointsState] = None,
     scene: Optional[Animation] = None,
     cmap: str = "gray",
 ) -> None:
@@ -129,7 +128,7 @@ def render_interactive(
     elif duration is None:
         raise ValueError("Provide either 'scene' or 'duration'.")
 
-    renderer = PyVistaRenderer(view, cmap=cmap)
+    renderer = NewRenderer(groups, cmap=cmap)
     plotter = renderer.plotter
 
     duration_ms = int(1000 / fps)
@@ -139,9 +138,14 @@ def render_interactive(
         t = step / fps
         print(f"Timer event: step={step}, t={t:.3f} s")
 
-        if state is not None and scene is not None:
-            state.reset()
-            scene.apply(state, t)
+        # Reset all base_points
+        for group in groups:
+            group.reset()
+
+        # TODO: Animate
+        if scene is not None:
+            scene.apply(t)
+
         renderer.render_frame()
 
     plotter.iren.initialize()

@@ -57,3 +57,6 @@ class Group3D:
     def plot(self):
         self.multiblock.plot()
 
+    def reset(self):
+        self.all_points[:] = self.all_base_points
+

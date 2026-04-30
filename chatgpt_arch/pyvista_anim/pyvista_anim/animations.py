@@ -10,12 +10,26 @@ from pyvista_anim.state import GridState, PointsState
 
 
 class Animation(Protocol):
-    """Anything that can mutate a PointsState at local time `t`."""
+    """Anything that can mutate a pyvista points array (shape (n_points, 3)) at local time `t`."""
 
     duration: float
 
-    def apply(self, state: PointsState, t: float) -> None:
+    def apply(self, t: float) -> None:
         ...
+
+class PointsTranslationX:
+    """Translate the grid points in a specified direction.
+    
+    """
+
+    def __init__(self, points: np.ndarray, duration: float, distance: float):
+        self.points = points
+        self.duration = duration
+        self.distance = distance
+
+    def apply(self, t: float) -> None:
+        phase = t / self.duration if self.duration > 0.0 else 1.0
+        self.points[:, 0] += self.distance * phase
 
 
 class WaveElevation:
