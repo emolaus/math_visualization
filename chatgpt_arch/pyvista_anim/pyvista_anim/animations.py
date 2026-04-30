@@ -6,15 +6,15 @@ from matplotlib.pyplot import step
 from matplotlib.pyplot import step
 import numpy as np
 
-from pyvista_anim.state import GridState
+from pyvista_anim.state import GridState, PointsState
 
 
 class Animation(Protocol):
-    """Anything that can mutate a GridState at local time `t`."""
+    """Anything that can mutate a PointsState at local time `t`."""
 
     duration: float
 
-    def apply(self, state: GridState, t: float) -> None:
+    def apply(self, state: PointsState, t: float) -> None:
         ...
 
 

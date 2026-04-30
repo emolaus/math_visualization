@@ -61,9 +61,9 @@ def test_scene_4(duration: float):
     scale_y = 1 / np.cos(angle)*1.5
     return Sequence(
         Parallel(
-            RotatePoints(duration=2, angle=angle*180/np.pi), #, speed=2.0, cycles=1.5
-            SimpleScalePoints(duration=2, scale_x=scale_x, scale_y=scale_y),
+            RotatePoints(duration=duration, angle=angle*180/np.pi), #, speed=2.0, cycles=1.5
+            # SimpleScalePoints(duration=2, scale_x=scale_x, scale_y=scale_y),
             # RandomMobius(duration=duration, rate=2.0),
-            SimpleExpPoints(duration=0.5, final_angle=2*np.pi),
+            # SimpleExpPoints(duration=0.5, final_angle=2*np.pi),
         ),
     )

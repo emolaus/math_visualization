@@ -1,8 +1,24 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Protocol
 
 import numpy as np
+
+
+class PointsState(Protocol):
+    """Common interface for mutable point-cloud state used by animations.
+
+    Both GridState and PolyDataView satisfy this protocol, allowing
+    animation classes to operate on either without type-specific code.
+    """
+
+    base_points: np.ndarray
+    points: np.ndarray
+
+    def reset(self) -> None:
+        ...
+
 
 @dataclass
 class GridState:

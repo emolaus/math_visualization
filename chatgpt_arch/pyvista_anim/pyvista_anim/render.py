@@ -5,7 +5,7 @@ from typing import Optional
 import pyvista as pv
 
 from pyvista_anim.animations import Animation
-from pyvista_anim.state import GridState
+from pyvista_anim.state import GridState, PointsState
 from pyvista_anim.view import View
 
 
@@ -51,7 +51,7 @@ def render_single_frame(
     view: View,
     t: float = 0.0,
     *,
-    state: Optional[GridState] = None,
+    state: Optional[PointsState] = None,
     scene: Optional[Animation] = None,
     cmap: str = "gray",
 ) -> None:
@@ -70,7 +70,7 @@ def render_movie(
     fps: int,
     duration: Optional[float] = None,
     *,
-    state: Optional[GridState] = None,
+    state: Optional[PointsState] = None,
     scene: Optional[Animation] = None,
     cmap: str = "gray",
 ) -> None:
@@ -103,7 +103,7 @@ def render_interactive(
     fps: int,
     duration: Optional[float] = None,
     *,
-    state: Optional[GridState] = None,
+    state: Optional[PointsState] = None,
     scene: Optional[Animation] = None,
     cmap: str = "gray",
 ) -> None:

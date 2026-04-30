@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import random
 
+from pyvista_anim.animations import RandomMobius, RotatePoints
 from pyvista_anim.render import render_interactive, render_movie, render_single_frame
 from pyvista_anim.scenes import make_default_scene, test_scene_1, test_scene_2, test_scene_3, test_scene_4
 from pyvista_anim.state import make_grid_state, make_grid_state_city
@@ -48,7 +49,7 @@ def main() -> None:
     
     # scene = make_default_scene(args.duration)
     # scene = test_scene_2(args.duration, rate=2.0)
-    # scene = test_scene_4(args.duration)
+    scene = test_scene_4(args.duration)
 
     # colormap = happy_colormap(state.intensity.min(), state.intensity.max())
     view = PolyDataView("D:/Code/math_visualizations/3Dmodel/tinker.obj")
@@ -60,7 +61,8 @@ def main() -> None:
         # render_movie(view, filename=args.name, fps=args.framerate, state=state, scene=scene)
         print(f"Made movie {args.name}")
     else:
-        render_interactive(view, fps=25, duration=args.duration)  
+        render_interactive(view, fps=25, duration=10.0, state=view, scene=RotatePoints(10.0, angle=45))
+        # render_interactive(view, fps=25, duration=args.duration, scene=scene)  
         # render_interactive(view, fps=args.framerate, state=state, scene=scene, cmap=colormap)
 
 

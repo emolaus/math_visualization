@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Protocol
 
+import numpy as np
 import pyvista as pv
 
 from pyvista_anim.state import GridState
@@ -64,11 +65,17 @@ class PolyDataView:
         else:
             raise ValueError("Provide either 'path' or 'mesh'.")
 
+        self.base_points: np.ndarray = self.mesh.points.copy()
+        self.points: np.ndarray = self.mesh.points.copy()
+
         if texture_path is not None:
             self.texture = pv.read_texture(texture_path)
         else:
             self.texture = None
 
+    def reset(self) -> None:
+        self.points[:] = self.base_points
+
     def update(self) -> None:
-        pass
+        self.mesh.points = self.points.copy()
 
